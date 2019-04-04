@@ -1,6 +1,8 @@
 import requests
-from pprint import pprint
 import json
+from itertools import count
+from pprint import pprint
+from model import Dish
 
 if __name__ == '__main__':
     # with open('auth.txt') as auth_file:
@@ -8,7 +10,7 @@ if __name__ == '__main__':
     #     app_key = auth_file.readline().strip()
     #
     # response = requests.get(
-    #     'https://api.edamam.com/search?q=chicken&app_id={}&app_key={}'.format(app_id, app_key))
+    #     'https://api.edamam.com/search?q=chicken&to=100&app_id={}&app_key={}'.format(app_id, app_key))
     #
     # f = open('response.json', 'w+')
     # json.dump(response.json(), f)
@@ -17,11 +19,9 @@ if __name__ == '__main__':
     with open('response.json') as res_file:
         response = json.load(res_file)
 
-    hits = response['hits']
-    recipe = hits[2]['recipe']
-    pprint(recipe)
-    energy = recipe['totalNutrients']['ENERC_KCAL']
-    carbs = recipe['totalNutrients']['CHOCDF']
-    fat = recipe['totalNutrients']['FAT']
-    protein = recipe['totalNutrients']['PROCNT']
-    print(energy, carbs, fat, protein)
+    counter = count()
+
+    # pprint(response)
+    results = [Dish(next(counter), hit['recipe']) for hit in response['hits']]
+    for res in results:
+        print(res.name)
