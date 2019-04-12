@@ -1,0 +1,36 @@
+input {
+    outline: none;
+    box-shadow: none;
+}
+
+a {
+    color: black;
+    transition: 0.3s all ease-in-out !important;
+}
+.search-input {
+    width: 50%;
+    height: 45px;
+    border-radius: 15px;
+    padding-left: 15px;
+}
+
+.without-login {
+    background-color: tomato;
+}
+
+.without-login:hover {
+    background-color: green;
+}
+
+.with-login {
+    background-color: greenyellow;
+}
+
+.with-login:hover {
+    background-color: red;
+}
+
+.avatar {
+    height: 40px;
+    border-radius: 100%;
+}
