@@ -8,13 +8,14 @@
     <title>Recipe search</title>
 </head>
 <body>
+    <a href="{{ url_for ('profile', profile_id=1) }}">Profile</a>
     <div class="container mx-auto">
         <input type="text" class="search-input mx-auto d-block my-5" placeholder="TODO: example:...">
         <div class="d-flex">
-            <a href="recipe.html" class="btn without-login ml-auto mr-5 ">Search without login</a>
+            <a href="{{ url_for ('recipe_results') }}" class="btn without-login ml-auto mr-5 ">Search</a>
             <a class="btn with-login mr-auto">Login by: Google</a>
         </div>
     </div>
-
+    {% block content %}{% endblock %}
 </body>
 </html>

@@ -4,8 +4,8 @@ diet_labels = ['balanced', 'high-protein', 'high-fiber', 'low-fat', 'low-carb', 
 
 
 class Dish:
-    def __init__(self, id, recipe):
-        self.id = id
+    def __init__(self, dish_id, recipe):
+        self.id = dish_id
         self.name = recipe['label']
         self.ingredients = ['{} ({} g)'.format(i['text'], str(round(i['weight'], 1))) for i in recipe['ingredients']]
         self.image_url = recipe['image']
@@ -36,7 +36,8 @@ class HistoryDay:
 
 
 class User:
-    def __init__(self, name, surname):
+    def __init__(self, profile_id, name, surname):
+        self.id = profile_id
         self.name = name
         self.surname = surname
         self.favourites = []
