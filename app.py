@@ -11,8 +11,10 @@ with open('response.json') as res_file:
 counter = count()
 results = [Dish(next(counter), hit['recipe']) for hit in response['hits']]
 
-mock_user = User(1, 'Test', 'User').__dict__
+mock_user = User(1, 'Test', 'User')
 mock_products = [Product('Chicken', 2, 'kg').__dict__, Product('Butter', 200, 'g').__dict__]
+mock_user.products = mock_products
+mock_user = mock_user.__dict__
 
 
 @app.route('/')
@@ -47,8 +49,6 @@ def recipe_results():
 
 @app.route('/recipes/<recipe_id>')
 def recipe_details(recipe_id):
-    print(type(recipe_id))
-    print(recipe_id)
     return render_template('recipe.html', recipe=results[int(recipe_id)])
 
 
