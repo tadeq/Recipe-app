@@ -3,12 +3,12 @@
 <head>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
     <title>Recipe search</title>
 </head>
 <body>
-    <a href="{{ url_for ('profile', profile_id=1) }}">Profile</a>
+    <a href="{{ url_for ('profile', profile=1) }}">Profile</a>
     <div class="container mx-auto">
         <input type="text" class="search-input mx-auto d-block my-5" placeholder="TODO: example:...">
         <div class="d-flex">

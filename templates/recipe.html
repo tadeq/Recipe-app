@@ -4,22 +4,49 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
     <title>{{ profile.name }} {{ profile.surname }}</title>
 </head>
 {% block content %}
     <div class="container">
-        <h1 id="recipe-title" class="w-100 text-center my-5">
-            {{ recipe.name }}
-        </h1>
         <div class="mt-5 text-center" id="recipe-content">
-            <h4>Ingredients:</h4>
-            <ul>
-                {% for ingredient in recipe.ingredients %}
-                    <li>{{ ingredient }}</li>
-                {% endfor %}
-            </ul>
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 id="recipe-title" class="w-100 text-center my-5">
+                        {{ recipe.name }}
+                    </h1>
+                    {% if recipe.cuisine_type %}
+                        <h4>Cuisine type: {% for type in recipe.cuisine_type %}{{ type }}, {% endfor %}</h4>
+                    {% endif %}
+                    <h4>Diet labels:</h4>
+                    <ul>
+                        {% for label in recipe.diet_labels %}
+                            <li>{{ label }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h4>Ingredients:</h4>
+                    <ul>
+                        {% for ingredient in recipe.ingredients %}
+                            <li>{{ ingredient }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-5">
+                    <img src="{{ recipe.image_url }}" style="max-width:600px;max-height:600px;">
+                    <br>
+                    <h5>In the whole portion</h5>
+                    Total weight: {{ recipe.weight }}<br>
+                    Kcal: {{ recipe.calories }}<br>
+                    Fat: {{ recipe.fat }}<br>
+                    Carbohydrates: {{ recipe.carbs }}<br>
+                    Protein: {{ recipe.protein }}
+                    <br><br>
+                    {% if recipe.time > 0 %}
+                        <h6>Total preparation time: {{ recipe.time }}</h6>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
     <script type="text/javascript">

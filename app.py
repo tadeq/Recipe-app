@@ -1,7 +1,7 @@
 from flask import Flask, render_template
-from model import User, Product, Dish
-import json
 from itertools import count
+import json
+from model import User, Product, Dish
 
 app = Flask(__name__)
 
@@ -22,23 +22,23 @@ def index():
     return render_template('search_layout.html')
 
 
-@app.route('/profiles/<profile_id>')
-def profile(profile_id):
+@app.route('/profiles/<profile>')
+def profile(profile):
     return render_template('profile.html', profile=mock_user)
 
 
-@app.route('/profiles/<profile_id>/history')
-def profile_history(profile_id):
+@app.route('/profiles/<profile>/history')
+def profile_history(profile):
     return render_template('history.html', profile=mock_user)
 
 
-@app.route('/profiles/<profile_id>/favourites')
-def profile_favourites(profile_id):
+@app.route('/profiles/<profile>/favourites')
+def profile_favourites(profile):
     return render_template('favourites.html', profile=mock_user)
 
 
-@app.route('/profiles/<profile_id>/products')
-def profile_products(profile_id):
+@app.route('/profiles/<profile>/products')
+def profile_products(profile):
     return render_template('products.html', profile=mock_user)
 
 
