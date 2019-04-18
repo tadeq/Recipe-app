@@ -10,9 +10,9 @@
 <body>
     <div class="container">
         <div class="top-menu w-100 d-flex my-3">
-            <a href="{{ url_for ('profile_products', profile=profile) }}" class="col text-center">My products</a>
-            <a href="{{ url_for ('profile_favourites', profile=profile) }}" class="col text-center">Favourites</a>
-            <a href="{{ url_for ('profile_history', profile=profile) }}" class="col text-center">History</a>
+            <a href="{{ url_for ('profile_products', profile_id=profile.id) }}" class="col text-center">My products</a>
+            <a href="{{ url_for ('profile_favourites', profile_id=profile.id) }}" class="col text-center">Favourites</a>
+            <a href="{{ url_for ('profile_history', profile_id=profile.id) }}" class="col text-center">History</a>
         </div>
         {% block content %}{% endblock %}
     </div>

@@ -1,7 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from itertools import count
 import json
-from model import User, Product, Dish
+from model import User, Product, Dish, diet_labels
 
 app = Flask(__name__)
 
@@ -19,31 +19,32 @@ mock_user = mock_user.__dict__
 
 @app.route('/')
 def index():
-    return render_template('search_layout.html')
+    return render_template('search_layout.html', labels=diet_labels)
 
 
-@app.route('/profiles/<profile>')
-def profile(profile):
+@app.route('/profiles/<profile_id>')
+def profile(profile_id):
     return render_template('profile.html', profile=mock_user)
 
 
-@app.route('/profiles/<profile>/history')
-def profile_history(profile):
+@app.route('/profiles/<profile_id>/history')
+def profile_history(profile_id):
     return render_template('history.html', profile=mock_user)
 
 
-@app.route('/profiles/<profile>/favourites')
-def profile_favourites(profile):
+@app.route('/profiles/<profile_id>/favourites')
+def profile_favourites(profile_id):
     return render_template('favourites.html', profile=mock_user)
 
 
-@app.route('/profiles/<profile>/products')
-def profile_products(profile):
+@app.route('/profiles/<profile_id>/products')
+def profile_products(profile_id):
     return render_template('products.html', profile=mock_user)
 
 
-@app.route('/recipes')
+@app.route('/recipes', methods=['GET', 'POST'])
 def recipe_results():
+    print([request.form.get(label) for label in diet_labels])
     return render_template('recipes.html', recipes=results)
 
 
