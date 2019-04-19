@@ -15,5 +15,14 @@
             <li>{{ product.name }}  {{ product.quantity }} {{ product.unit }} </li>
         {% endfor %}
     </ul>
-        {#  możliwość dodania kolejnego produktu #}
+    <form id="new_product_form" action="{{ url_for ('profile_products', profile_id=1) }}" method="post">
+        <div class="form-group">
+            <div class="row">
+                <input type="text" class="form-control col-sm-5 mr-1" name="name" placeholder="Product">
+                <input type="text" class="form-control col-sm-2 mr-1" name="quantity" placeholder="Quantity">
+                <input type="text" class="form-control col-sm-1 mr-1" name="unit" placeholder="Unit">
+                <button type="submit" class="btn btn-primary">Add product</button>
+            </div>
+        </div>
+    </form>
 {% endblock %}

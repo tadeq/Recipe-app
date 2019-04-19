@@ -4,8 +4,8 @@ diet_labels = ['balanced', 'high-protein', 'high-fiber', 'low-fat', 'low-carb', 
 
 
 class Dish:
-    def __init__(self, dish_id, recipe):
-        self.id = dish_id
+    def __init__(self, recipe):
+        self.id = recipe['uri'].replace('http://www.edamam.com/ontologies/edamam.owl#recipe_', '')
         self.name = recipe['label']
         self.ingredients = ['{} ({} g)'.format(i['text'], str(round(i['weight'], 1))) for i in recipe['ingredients']]
         self.image_url = recipe['image']
@@ -27,12 +27,10 @@ class Product:
         self.unit = unit
 
 
-class HistoryDay:
-    def __init__(self, day, month, year):
-        self.day = day
-        self.month = month
-        self.year = year
-        self.dishes = []
+class HistoryEntry:
+    def __init__(self, query, date_time):
+        self.query = query
+        self.date_time = date_time
 
 
 class User:

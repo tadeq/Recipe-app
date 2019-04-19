@@ -55,6 +55,9 @@
                         {% if recipe.time > 0 %}
                             <h6>Total preparation time: {{ recipe.time }}</h6>
                         {% endif %}
+                        <form action="{{ url_for('recipe_details', recipe_id=recipe.id) }}" method="post">
+                            <button type="submit" class="btn btn-dark">Add to favourites</button>
+                        </form>
                     </div>
                 </div>
             </div>
