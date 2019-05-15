@@ -9,5 +9,10 @@
     <title>{{ profile.name }} {{ profile.surname }}</title>
 </head>
 {% block content %}
-<h1>Favourites</h1>
+    <h1>My favourites</h1>
+        <ul>
+            {% for recipe in profile.favourites %}
+                <li><a href="{{ url_for('recipe_details', recipe_id=recipe.id) }}"> {{ recipe.name }} </a></li>
+            {% endfor %}
+        </ul>
 {% endblock %}

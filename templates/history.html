@@ -9,5 +9,10 @@
     <title>{{ profile.name }} {{ profile.surname }}</title>
 </head>
 {% block content %}
-<h1>history</h1>
+    <h1>Search history</h1>
+        <ul>
+            {% for entry in profile.history %}
+                <li> {{ entry.query }}  {{ entry.date_time }}</li> {# TODO redirecting to query results #}
+            {% endfor %}
+        </ul>
 {% endblock %}
