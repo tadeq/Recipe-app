@@ -10,13 +10,6 @@
 <body>
     <a href="{{ url_for ('profile', profile_id=1) }}">Profile</a>
     <div class="container mx-auto">
-<<<<<<< HEAD
-        <input type="text" class="search-input mx-auto d-block my-5" placeholder="TODO: example:...">
-        <div class="d-flex">
-            <a href="{{ url_for ('recipe_results') }}" class="btn without-login ml-auto mr-5 ">Search</a>
-            <a href="{{  url_for ('authorize') }}" class="btn with-login mr-auto">Login by: Google</a>
-        </div>
-=======
         <form id="diet_labels_form" action="{{ url_for ('recipe_results') }}" method="post">
             <input type="text" class="search-input mx-auto d-block my-5" name="query" placeholder="Your query here">
                 {% for label in labels %}
@@ -29,10 +22,9 @@
                 {% endfor %}
             <div class="d-flex">
                 <button type="submit" class="btn btn-primary ml-auto mr-5">Search</button>
-                <a class="btn with-login mr-auto">Login by: Google</a>
+                <a href="{{  url_for ('authorize') }}" class="btn with-login mr-auto">Login with Google</a>
             </div>
         </form>
->>>>>>> 32fa757b785f13af83abcb5850a89d0aa7233922
     </div>
     {% block content %}{% endblock %}
 </body>

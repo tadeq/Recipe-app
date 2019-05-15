@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, session, jsonify, redirect, url_for
+from flask import Flask, request, render_template, session, redirect
 import json
 from datetime import datetime
 from model import User, Product, Dish, HistoryEntry, diet_labels
@@ -16,19 +16,20 @@ SECRET_KEY = os.urandom(24)
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
+
 def credentials_to_dict(credentials):
-  return {'token': credentials.token,
-          'refresh_token': credentials.refresh_token,
-          'token_uri': credentials.token_uri,
-          'client_id': credentials.client_id,
-          'client_secret': credentials.client_secret,
-          'scopes': credentials.scopes}
+    return {'token': credentials.token,
+            'refresh_token': credentials.refresh_token,
+            'token_uri': credentials.token_uri,
+            'client_id': credentials.client_id,
+            'client_secret': credentials.client_secret,
+            'scopes': credentials.scopes}
+
 
 with open('response.json') as res_file:
     response = json.load(res_file)
 
 results = [Dish(hit['recipe']) for hit in response['hits']]
-
 mock_user = User(1, 'Test', 'User')
 mock_products = [Product('Chicken', 2, 'kg'), Product('Butter', 200, 'g')]
 mock_user.products = mock_products
@@ -57,8 +58,8 @@ def authorize():
     return redirect(authorization_url)
 
 
-@app.route('/profiles/<profile>')
-def profile(profile):
+@app.route('/profiles/<profile_id>')
+def profile(profile_id):
     credentials = google.oauth2.credentials.Credentials(
         **session['credentials'])
 
@@ -106,6 +107,9 @@ def recipe_details(recipe_id):
     if request.method == 'POST':
         if recipe not in mock_user.favourites:
             mock_user.favourites.append(recipe)
+    print(recipe.diet_labels)
+    print(recipe.cuisine_type)
+    print(str(recipe.ingredients))
     return render_template('recipe.html', labels=diet_labels, recipe=recipe)
 
 
