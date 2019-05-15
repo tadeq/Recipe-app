@@ -13,7 +13,7 @@
         <input type="text" class="search-input mx-auto d-block my-5" placeholder="TODO: example:...">
         <div class="d-flex">
             <a href="{{ url_for ('recipe_results') }}" class="btn without-login ml-auto mr-5 ">Search</a>
-            <a class="btn with-login mr-auto">Login by: Google</a>
+            <a href="{{  url_for ('authorize') }}" class="btn with-login mr-auto">Login by: Google</a>
         </div>
     </div>
     {% block content %}{% endblock %}
