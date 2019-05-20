@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, session, redirect
+from flask import Flask, request, render_template, session, redirect, url_for
 import json
 from datetime import datetime
 from model import User, Product, Dish, HistoryEntry, diet_labels
@@ -8,9 +8,9 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 
 CLIENT_SECRETS_FILE = "client_secret.json"
-SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
-API_SERVICE_NAME = 'drive'
-API_VERSION = 'v2'
+SCOPES = ['https://www.googleapis.com/auth/userinfo.profile']
+API_SERVICE_NAME = 'userinfo'
+API_VERSION = 'v1'
 SECRET_KEY = os.urandom(24)
 
 app = Flask(__name__)
@@ -44,7 +44,9 @@ def index():
 def authorize():
     # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE, scopes=SCOPES, redirect_uri='http://127.0.0.1:5000/profiles/1')
+        CLIENT_SECRETS_FILE, scopes=SCOPES)
+
+    flow.redirect_uri = url_for('profile', profile_id=1, _external=True)
 
     authorization_url, state = flow.authorization_url(
         # Enable offline access so that you can refresh an access token without
@@ -60,13 +62,19 @@ def authorize():
 
 @app.route('/profiles/<profile_id>')
 def profile(profile_id):
-    credentials = google.oauth2.credentials.Credentials(
-        **session['credentials'])
+    state = session['state']
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
+    flow.redirect_uri = url_for('index', _external=True)
 
-    drive = googleapiclient.discovery.build(
-        API_SERVICE_NAME, API_VERSION, credentials=credentials)
+    # Use the authorization server's response to fetch the OAuth 2.0 tokens.
+    authorization_response = "https://www.googleapis.com/userinfo/v2/me"
+    flow.fetch_token(authorization_response=authorization_response)
 
-    files = drive.files().list().execute()
+    # Store credentials in the session.
+    # ACTION ITEM: In a production app, you likely want to save these
+    #              credentials in a persistent database instead.
+    credentials = flow.credentials
     session['credentials'] = credentials_to_dict(credentials)
     return render_template('profile.html', profile=mock_user)
 
@@ -114,4 +122,5 @@ def recipe_details(recipe_id):
 
 
 if __name__ == '__main__':
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     app.run()
