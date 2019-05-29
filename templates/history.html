@@ -11,7 +11,7 @@
 {% block content %}
     <h1>Search history</h1>
         <ul>
-            {% for entry in profile.history %}
+            {% for entry in profile.history[::-1] %}
                 <li> {{ entry.query }}  {{ entry.date_time }}</li> {# TODO redirecting to query results #}
             {% endfor %}
         </ul>

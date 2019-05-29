@@ -12,8 +12,7 @@
 <div class="info-container mx-auto d-block">
     <h1 class="text-center w-100">{{ profile.name }} {{ profile.surname }}</h1>
     <div class="d-flex mt-5">
-        <img src="{{ url_for('static', filename='assets/loginavatar.png') }}" alt="profile-foto" class="mr-5 ml-auto">
-        <p class="ml-5 mr-auto">Opis Czlowieka</p>
+        <img src="{{ profile.image_url }}" alt="profile-foto" class="mr-5 ml-auto">
     </div>
 </div>
 {% endblock %}

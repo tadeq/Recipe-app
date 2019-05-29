@@ -1,126 +1,115 @@
 import os
-from flask import Flask, request, render_template, session, redirect, url_for
-import json
+from flask import Flask, request, render_template, redirect
+import requests
 from datetime import datetime
-from model import User, Product, Dish, HistoryEntry, diet_labels
-import google.oauth2.credentials
-import google_auth_oauthlib.flow
-import googleapiclient.discovery
+from model import User, Product, Dish, HistoryEntry, ALL_LABELS, DIET_LABELS, HEALTH_LABELS
+from db_connectivity import Dao
 
-CLIENT_SECRETS_FILE = "client_secret.json"
-SCOPES = ['https://www.googleapis.com/auth/userinfo.profile']
-API_SERVICE_NAME = 'userinfo'
-API_VERSION = 'v1'
+from authlib.client import OAuth2Session
+import google.oauth2.credentials
+import googleapiclient.discovery
+import google_auth
+
 SECRET_KEY = os.urandom(24)
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
+app.register_blueprint(google_auth.app)
+
+results = []
+user = None
+
+with open('auth_api.txt') as auth_file:
+    app_id = auth_file.readline().strip()
+    app_key = auth_file.readline().strip()
 
 
-def credentials_to_dict(credentials):
-    return {'token': credentials.token,
-            'refresh_token': credentials.refresh_token,
-            'token_uri': credentials.token_uri,
-            'client_id': credentials.client_id,
-            'client_secret': credentials.client_secret,
-            'scopes': credentials.scopes}
+def build_request(query, health_labels, diet_labels):
+    api_request = 'https://api.edamam.com/search?to=100&app_id={}&app_key={}'.format(app_id, app_key)
+    api_request += "&q={}".format(query)
+    for label in health_labels:
+        api_request += "&health={}".format(label)
+    for label in diet_labels:
+        api_request += "&diet={}".format(label)
+    return api_request
 
 
-with open('response.json') as res_file:
-    response = json.load(res_file)
-
-results = [Dish(hit['recipe']) for hit in response['hits']]
-mock_user = User(1, 'Test', 'User')
-mock_products = [Product('Chicken', 2, 'kg'), Product('Butter', 200, 'g')]
-mock_user.products = mock_products
-
-
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return render_template('search_layout.html')
+    global user
+    if google_auth.is_logged_in() and user is None:
+        user_info = google_auth.get_user_info()
+        user = dao.get_user_by_id(user_info['id'])
+        print(user_info['given_name'])
+        print(user_info['family_name'])
+        if user is None:
+            user = dao.create_user(
+                User(user_info['id'], user_info['given_name'], user_info['family_name'], user_info['picture']))
+    elif not google_auth.is_logged_in() and user is not None:
+        user = None
+    return render_template('search_layout.html', labels=ALL_LABELS, profile=user)
 
 
-@app.route('/authorize')
-def authorize():
-    # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE, scopes=SCOPES)
-
-    flow.redirect_uri = url_for('profile', profile_id=1, _external=True)
-
-    authorization_url, state = flow.authorization_url(
-        # Enable offline access so that you can refresh an access token without
-        # re-prompting the user for permission. Recommended for web server apps.
-        access_type='offline',
-        # Enable incremental authorization. Recommended as a best practice.
-        include_granted_scopes='true')
-
-    # Store the state so the callback can verify the auth server response.
-    session['state'] = state
-    return redirect(authorization_url)
-
-
-@app.route('/profiles/<profile_id>')
+@app.route('/profiles/<profile_id>', methods=['GET'])
 def profile(profile_id):
-    state = session['state']
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
-    flow.redirect_uri = url_for('index', _external=True)
-
-    # Use the authorization server's response to fetch the OAuth 2.0 tokens.
-    authorization_response = "https://www.googleapis.com/userinfo/v2/me"
-    flow.fetch_token(authorization_response=authorization_response)
-
-    # Store credentials in the session.
-    # ACTION ITEM: In a production app, you likely want to save these
-    #              credentials in a persistent database instead.
-    credentials = flow.credentials
-    session['credentials'] = credentials_to_dict(credentials)
-    return render_template('profile.html', profile=mock_user)
+    return render_template('profile.html', profile=user)
 
 
-@app.route('/profiles/<profile_id>/history')
+@app.route('/profiles/<profile_id>/history', methods=['GET'])
 def profile_history(profile_id):
-    return render_template('history.html', profile=mock_user)
+    return render_template('history.html', profile=user)
 
 
-@app.route('/profiles/<profile_id>/favourites')
+@app.route('/profiles/<profile_id>/favourites', methods=['GET'])
 def profile_favourites(profile_id):
-    return render_template('favourites.html', profile=mock_user)
+    return render_template('favourites.html', profile=user)
 
 
 @app.route('/profiles/<profile_id>/products', methods=['GET', 'POST'])
 def profile_products(profile_id):
     if request.method == 'POST':
-        mock_user.products.append(
-            Product(request.form.get('name'), request.form.get('quantity'), request.form.get('unit')))
-    return render_template('products.html', profile=mock_user)
+        dao.add_product(user,
+                        Product(request.form.get('name'), request.form.get('quantity'), request.form.get('unit')))
+    return render_template('products.html', profile=user)
 
 
-@app.route('/recipes', methods=['GET', 'POST'])
+@app.route('/recipes', methods=['GET'])
 def recipe_results():
-    query = request.form['query']
-    if query in mock_user.history:
-        mock_user.history.remove(query)
-    mock_user.history.append(HistoryEntry(query, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-    return render_template('recipes.html', labels=diet_labels, recipes=results)
+    global results
+    query = request.args['query']
+    labels = [label for label in ALL_LABELS if request.args.get(label) is not None]
+    health_labels = list(filter(lambda l: l in HEALTH_LABELS, labels))
+    diet_labels = list(filter(lambda l: l in DIET_LABELS, labels))
+    api_request = build_request(query, health_labels, diet_labels)
+    if user is not None:
+        if query in [entry.query for entry in user.history]:
+            dao.delete_entry(user, query)
+        dao.add_history_entry(user, HistoryEntry(query, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    response = requests.get(api_request)
+    results = [Dish(hit['recipe']) for hit in response.json()['hits']] if response.status_code == 200 else []
+    return render_template('recipes.html', labels=ALL_LABELS, recipes=results, profile=user)
 
 
 @app.route('/recipes/<recipe_id>', methods=['GET', 'POST'])
 def recipe_details(recipe_id):
-    # TODO if the recipe was chosen from the favourites -> get it from db, if from search results -> get it from results
+    recipe = None
     for res in results:
         if res.id == recipe_id:
             recipe = res
     if request.method == 'POST':
-        if recipe not in mock_user.favourites:
-            mock_user.favourites.append(recipe)
-    print(recipe.diet_labels)
-    print(recipe.cuisine_type)
-    print(str(recipe.ingredients))
-    return render_template('recipe.html', labels=diet_labels, recipe=recipe)
+        if user is not None:
+            if recipe is not None and recipe not in user.favourites:
+                dao.add_favourite_dish(user, recipe)
+    elif request.method == 'GET' and recipe is None:
+        recipe = dao.get_dish_by_id(recipe_id)
+    return render_template('recipe.html', labels=ALL_LABELS, recipe=recipe, profile=user)
 
 
 if __name__ == '__main__':
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    dao = Dao()
+    # user = dao.create_user(User(1, 'John', 'Doe'))
+    # user = dao.get_user_by_id(1)
+    # user.products = dao.get_products_by_user(user)
+    # user.history = dao.get_history_entries_by_user(user)
+    # user.favourites = dao.get_dishes_by_user(user)
     app.run()

@@ -1,6 +1,7 @@
-diet_labels = ['balanced', 'high-protein', 'high-fiber', 'low-fat', 'low-carb', 'low-sodium', 'vegan', 'vegetarian',
-               'paleo', 'dairy-free', 'gluten-free', 'wheat-free', 'fat-free', 'low-sugar',
-               'egg-free', 'peanut-free', 'tree-nut-free', 'soy-free', 'fish-free', 'shellfish-free']
+DIET_LABELS = ['balanced', 'high-protein', 'high-fiber', 'low-fat', 'low-carb', 'low-sodium']
+HEALTH_LABELS = ['vegan', 'vegetarian', 'paleo', 'dairy-free', 'gluten-free', 'wheat-free', 'fat-free', 'low-sugar',
+                 'egg-free', 'peanut-free', 'tree-nut-free', 'soy-free', 'fish-free', 'shellfish-free']
+ALL_LABELS = DIET_LABELS + HEALTH_LABELS
 
 
 class Dish:
@@ -31,9 +32,11 @@ class Dish:
         self.diet_labels = recipe['healthLabels'] + recipe['dietLabels']
         self.cuisine_type = recipe['cuisineType'] if 'cuisineType' in recipe else None
         self.calories = round(recipe['totalNutrients']['ENERC_KCAL']['quantity'], 1)
-        self.carbs = round(recipe['totalNutrients']['CHOCDF']['quantity'], 1)
-        self.fat = round(recipe['totalNutrients']['FAT']['quantity'], 1)
-        self.protein = round(recipe['totalNutrients']['PROCNT']['quantity'], 1)
+        self.carbs = round(recipe['totalNutrients']['CHOCDF']['quantity'], 1) if 'CHOCDF' in recipe[
+            'totalNutrients'] else 0
+        self.fat = round(recipe['totalNutrients']['FAT']['quantity'], 1) if 'FAT' in recipe['totalNutrients'] else 0
+        self.protein = round(recipe['totalNutrients']['PROCNT']['quantity'], 1) if 'PROCNT' in recipe[
+            'totalNutrients'] else 0
         self.time = recipe['totalTime']
         self.weight = round(recipe['totalWeight'], 0)
         self.url = recipe['url']
@@ -67,12 +70,17 @@ class HistoryEntry:
         self.date_time = date_time
 
 
-# TODO add google account identificator
 class User:
-    def __init__(self, profile_id, name, surname):
+    def __init__(self, profile_id, name, surname, img_url):
         self.id = profile_id
         self.name = name
         self.surname = surname
+        self.image_url = img_url
         self.favourites = []
         self.history = []
         self.products = []
+
+    def remove_history_entry_by_query(self, query):
+        entries_to_remove = [entry for entry in self.history if entry.query == query]
+        for entry in entries_to_remove:
+            self.history.remove(entry)
