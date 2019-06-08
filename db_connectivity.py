@@ -84,6 +84,13 @@ class Dao:
         products = self.cursor.fetchall()
         return [Product(p[0], p[1], p[2]) for p in products]
 
+    def get_product_by_name(self, product_name):
+        self.cursor.execute('SELECT * FROM Products WHERE product_name=:product_name', {'product_name': product_name})
+        product = self.cursor.fetchone()
+        if product is not None:
+            return Product(product[0], product[1], product[2])
+        return None
+
     def get_history_entries_by_user(self, user):
         self.cursor.execute('SELECT * FROM History_entries WHERE user_id = :user_id', {'user_id': user.id})
         entries = self.cursor.fetchall()
@@ -107,7 +114,12 @@ class Dao:
             self.cursor.execute("""DELETE FROM Products WHERE user_id = :user_id AND product_name = :product_name 
         AND quantity = :quantity AND unit = :unit""", {'user_id': user.id, 'product_name': product.name,
                                                        'quantity': product.quantity, 'unit': product.unit})
-            user.products.remove(product)
+            to_remove = []
+            for p in user.products:
+                if p.name == product.name and p.quantity == product.quantity and p.unit == product.unit:
+                    to_remove.append(p)
+            for prod_to_remove in to_remove:
+                user.products.remove(prod_to_remove)
 
     def delete_favourite_dish(self, user, dish):
         with self.connection:

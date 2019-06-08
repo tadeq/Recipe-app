@@ -16,15 +16,16 @@
     <ul>
         {% for product in profile.products %}
             <div class="row">
-                <li>{{ product.name }} {{ product.quantity }} {{ product.unit }}
-                    <button type="submit" class="close" aria-label="Close" style="padding-left: 5px;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </li>
+                <form id="new_product_form" action="{{ url_for ('delete_product', product_name=product.name) }}" method="post">
+                    <li>{{ product.name }} {{ product.quantity }} {{ product.unit }}
+                        <input type="hidden" name="product_name" value="{{ product.name }}">
+                        <button type="submit" class="close" aria-label="Close" style="padding-left: 5px;">&times;</button>
+                    </li>
+                </form>
             </div>
         {% endfor %}
     </ul>
-    <form id="new_product_form" action="{{ url_for ('profile_products', profile_id=profile.id) }}" method="post">
+    <form id="new_product_form" action="{{ url_for ('profile_products') }}" method="post">
         <div class="form-group">
             <div class="row">
                 <input type="text" class="form-control col-sm-5 mr-1" name="name" placeholder="Product">

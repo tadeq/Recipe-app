@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, url_for
 import requests
 from datetime import datetime
 from model import User, Product, Dish, HistoryEntry, ALL_LABELS, DIET_LABELS, HEALTH_LABELS
@@ -40,8 +40,6 @@ def index():
     if google_auth.is_logged_in() and user is None:
         user_info = google_auth.get_user_info()
         user = dao.get_user_by_id(user_info['id'])
-        print(user_info['given_name'])
-        print(user_info['family_name'])
         if user is None:
             user = dao.create_user(
                 User(user_info['id'], user_info['given_name'], user_info['family_name'], user_info['picture']))
@@ -50,27 +48,33 @@ def index():
     return render_template('search_layout.html', labels=ALL_LABELS, profile=user)
 
 
-@app.route('/profiles/<profile_id>', methods=['GET'])
-def profile(profile_id):
+@app.route('/profile', methods=['GET'])
+def profile():
     return render_template('profile.html', profile=user)
 
 
-@app.route('/profiles/<profile_id>/history', methods=['GET'])
-def profile_history(profile_id):
+@app.route('/profile/history', methods=['GET'])
+def profile_history():
     return render_template('history.html', profile=user)
 
 
-@app.route('/profiles/<profile_id>/favourites', methods=['GET'])
-def profile_favourites(profile_id):
+@app.route('/profile/favourites', methods=['GET'])
+def profile_favourites():
     return render_template('favourites.html', profile=user)
 
 
-@app.route('/profiles/<profile_id>/products', methods=['GET', 'POST'])
-def profile_products(profile_id):
+@app.route('/profile/products', methods=['GET', 'POST'])
+def profile_products():
     if request.method == 'POST':
         dao.add_product(user,
                         Product(request.form.get('name'), request.form.get('quantity'), request.form.get('unit')))
     return render_template('products.html', profile=user)
+
+
+@app.route('/profile/products/delete', methods=['POST'])
+def delete_product():
+    dao.delete_product(user, dao.get_product_by_name(request.form.get('product_name')))
+    return redirect(url_for('profile_products'))
 
 
 @app.route('/recipes', methods=['GET'])

@@ -9,7 +9,7 @@
 </head>
 <body>
     {% if profile is not none %}
-        <a href="{{ url_for ('profile', profile_id=profile.id) }}">Profile</a>
+        <a href="{{ url_for ('profile') }}">Profile</a>
     {% endif %}
     <div align="right" style="margin-right: 10px; margin-top: 10px">
     {% if profile is not none %}

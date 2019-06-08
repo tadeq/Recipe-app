@@ -11,9 +11,9 @@
     <a href="{{ url_for ('index') }}">Search</a>
     <div class="container">
         <div class="top-menu w-100 d-flex my-3">
-            <a href="{{ url_for ('profile_products', profile_id=profile.id) }}" class="col text-center">Products</a>
-            <a href="{{ url_for ('profile_favourites', profile_id=profile.id) }}" class="col text-center">Favourites</a>
-            <a href="{{ url_for ('profile_history', profile_id=profile.id) }}" class="col text-center">History</a>
+            <a href="{{ url_for ('profile_products') }}" class="col text-center">Products</a>
+            <a href="{{ url_for ('profile_favourites') }}" class="col text-center">Favourites</a>
+            <a href="{{ url_for ('profile_history') }}" class="col text-center">History</a>
         </div>
         {% block content %}{% endblock %}
     </div>
