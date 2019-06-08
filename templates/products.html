@@ -2,8 +2,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
     <title>{{ profile.name }} {{ profile.surname }}</title>
@@ -12,10 +15,16 @@
     <h1>My products</h1>
     <ul>
         {% for product in profile.products %}
-            <li>{{ product.name }}  {{ product.quantity }} {{ product.unit }} </li>
+            <div class="row">
+                <li>{{ product.name }} {{ product.quantity }} {{ product.unit }}
+                    <button type="submit" class="close" aria-label="Close" style="padding-left: 5px;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </li>
+            </div>
         {% endfor %}
     </ul>
-    <form id="new_product_form" action="{{ url_for ('profile_products', profile_id=1) }}" method="post">
+    <form id="new_product_form" action="{{ url_for ('profile_products', profile_id=profile.id) }}" method="post">
         <div class="form-group">
             <div class="row">
                 <input type="text" class="form-control col-sm-5 mr-1" name="name" placeholder="Product">
