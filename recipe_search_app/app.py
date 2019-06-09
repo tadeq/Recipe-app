@@ -5,9 +5,6 @@ from datetime import datetime
 from model import User, Product, Dish, HistoryEntry, ALL_LABELS, DIET_LABELS, HEALTH_LABELS
 from db_connectivity import Dao
 
-from authlib.client import OAuth2Session
-import google.oauth2.credentials
-import googleapiclient.discovery
 import google_auth
 
 SECRET_KEY = os.urandom(24)
@@ -19,7 +16,8 @@ app.register_blueprint(google_auth.app)
 results = []
 user = None
 
-with open('auth_api.txt') as auth_file:
+with open(os.path.join(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))),
+                       'auth_api.txt')) as auth_file:
     app_id = auth_file.readline().strip()
     app_key = auth_file.readline().strip()
 
