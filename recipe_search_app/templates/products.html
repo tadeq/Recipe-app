@@ -16,22 +16,31 @@
 </head>
 {% block content %}
     <h1>My products</h1>
-    <ul>
+    <table>
+        <tr style="border: 1px solid black">
+            <th class="col-sm-5 mr-1">Name</th>
+            <th class="col-sm-5 mr-1">Quantity</th>
+            <th class="col-sm-5 mr-1">Unit</th>
+        </tr>
         {% for product in profile.products %}
-            <div class="row">
+            <tr>
                 <form id="new_product_form" action="{{ url_for ('delete_product', product_name=product.name) }}"
                       method="post">
-                    <li>{{ product.name }} {{ product.quantity }} {{ product.unit }}
+                    <th class="col-sm-5 mr-1">{{ product.name }}</th>
+                    <th class="col-sm-5 mr-1">{{ product.quantity }} </th>
+                    <th class="col-sm-5 mr-1">{{ product.unit }} </th>
+                    <th>
                         <input type="hidden" name="product_name" value="{{ product.name }}">
                         <button type="submit" class="close" aria-label="Close" style="padding-left: 5px;">&times;
                         </button>
+                    </th>
                     </li>
                 </form>
-            </div>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
     <form id="new_product_form" action="{{ url_for ('profile_products') }}" method="post">
-        <div class="form-group">
+        <div class="form-group" style="padding-left: 50px; padding-top: 100px">
             <div class="row">
                 <input type="text" class="form-control col-sm-5 mr-1" name="name" placeholder="Product">
                 <input type="text" class="form-control col-sm-2 mr-1" name="quantity" placeholder="Quantity">

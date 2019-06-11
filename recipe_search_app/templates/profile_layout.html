@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
     <title>{{ profile.name }} {{ profile.surname }}</title>
+    <style>
+        body {
+            background-image: url({{ url_for('static', filename='assets/back.jpg') }});
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -34,7 +39,8 @@
         <div align="right" class="dropdown">
             <a href="#" class="dropdown-toggle" role="button"
                id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="{{ profile.image_url }}" alt="profile-foto" class="rounded-circle" style="width: 5%; height: 5%;">
+                <img src="{{ profile.image_url }}" alt="profile-foto" class="rounded-circle"
+                     style="width: 5%; height: 5%;">
             </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-secondary" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="{{ url_for ('profile') }}">Profile</a>

@@ -15,9 +15,28 @@
     <title>{{ profile.name }} {{ profile.surname }}</title>
 </head>
 {% block content %}
-    <ul>
+    <hr>
+    <table align="center" style="width: 50%;">
+        <col width="30%">
+        <col width="10%">
+        <col width="5%">
+        <tr>
+            <th><h3>Name</h3></th>
+            <th><h3>Time</h3></th>
+            <th></th>
+        </tr>
         {% for recipe in recipes %}
-            <li><a href="{{ url_for ('recipe_details', recipe_id=recipe.id) }}">{{ recipe.name }} </a></li>
+            <tr>
+                <th><a href="{{ url_for ('recipe_details', recipe_id=recipe.id) }}">{{ recipe.name }} </a></th>
+                <th>
+                    {% if recipe.time != 0 %}
+                        <h6>{{ recipe.time }}</h6>
+                    {% else %}
+                        <h6> - </h6>
+                    {% endif %}
+                </th>
+                <th><img src="{{ recipe.image_url }}" style="max-width:60px;max-height:60px;"></th>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
 {% endblock %}

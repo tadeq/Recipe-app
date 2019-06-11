@@ -8,6 +8,10 @@ a {
     transition: 0.3s all ease-in-out !important;
 }
 
+body {
+    background-image: url("assets/back.jpg");
+}
+
 .search-input {
     width: 50%;
     height: 45px;
@@ -30,4 +34,5 @@ a {
 .with-login:hover {
     background-color: red;
 }
+
 
