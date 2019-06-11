@@ -1,21 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <meta charset="UTF-8">
     <title>{{ profile.name }} {{ profile.surname }}</title>
 </head>
 <body>
-    <a href="{{ url_for ('index') }}">Search</a>
-    <div class="container">
-        <div class="top-menu w-100 d-flex my-3">
-            <a href="{{ url_for ('profile_products') }}" class="col text-center">Products</a>
-            <a href="{{ url_for ('profile_favourites') }}" class="col text-center">Favourites</a>
-            <a href="{{ url_for ('profile_history') }}" class="col text-center">History</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for ('index') }}">Search <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for ('profile_products') }}">Products</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for ('profile_favourites') }}">Favourites</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for ('profile_history') }}">History</a>
+            </li>
+        </ul>
+
+        <div align="right" class="dropdown">
+            <a href="#" class="dropdown-toggle" role="button"
+               id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="{{ profile.image_url }}" alt="profile-foto" class="rounded-circle" style="width: 5%; height: 5%;">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-secondary" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{{ url_for ('profile') }}">Profile</a>
+                <a class="dropdown-item" href="{{ url_for ('google_auth.logout') }}">Logout</a>
+            </div>
         </div>
-        {% block content %}{% endblock %}
     </div>
+</nav>
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
 </body>
 </html>

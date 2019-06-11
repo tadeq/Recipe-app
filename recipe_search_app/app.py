@@ -13,11 +13,12 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.register_blueprint(google_auth.app)
 
+dao = Dao()
 results = []
 user = None
 
 with open(os.path.join(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))),
-                       'auth_api.txt')) as auth_file:
+                       '..\\auth_api.txt')) as auth_file:
     app_id = auth_file.readline().strip()
     app_key = auth_file.readline().strip()
 
@@ -108,7 +109,6 @@ def recipe_details(recipe_id):
 
 
 if __name__ == '__main__':
-    dao = Dao()
     # user = dao.create_user(User(1, 'John', 'Doe'))
     # user = dao.get_user_by_id(1)
     # user.products = dao.get_products_by_user(user)
