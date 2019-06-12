@@ -1,0 +1,1 @@
+web: sh -c 'cd ./recipe_search_app/ && gunicorn app:app'

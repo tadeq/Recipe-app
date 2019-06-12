@@ -10,7 +10,7 @@ else
 
 fi
 
-docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$TAG .
+docker build -f Dockerfile -t $TRAVIS_REPO_SLUG
 
 docker tag $TRAVIS_REPO_SLUG $DOCKER_REPO
 
