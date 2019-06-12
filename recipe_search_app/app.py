@@ -18,7 +18,7 @@ results = []
 user = None
 
 with open(os.path.join(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))),
-                       '..\\auth_api.txt')) as auth_file:
+                       'auth_api.txt')) as auth_file:
     app_id = auth_file.readline().strip()
     app_key = auth_file.readline().strip()
 
@@ -103,15 +103,10 @@ def recipe_details(recipe_id):
         if user is not None:
             if recipe is not None and recipe not in user.favourites:
                 dao.add_favourite_dish(user, recipe)
-    elif request.method == 'GET' and recipe is None:
+    if recipe is None:
         recipe = dao.get_dish_by_id(recipe_id)
     return render_template('recipe.html', labels=ALL_LABELS, recipe=recipe, profile=user)
 
 
 if __name__ == '__main__':
-    # user = dao.create_user(User(1, 'John', 'Doe'))
-    # user = dao.get_user_by_id(1)
-    # user.products = dao.get_products_by_user(user)
-    # user.history = dao.get_history_entries_by_user(user)
-    # user.favourites = dao.get_dishes_by_user(user)
-    app.run()
+    app.run(debug=True)

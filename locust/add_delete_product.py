@@ -1,4 +1,4 @@
-from locust import HttpLocust, TaskSet, TaskSequence, task, seq_task
+from locust import HttpLocust, TaskSequence, seq_task
 from itertools import count
 
 counter1 = count()

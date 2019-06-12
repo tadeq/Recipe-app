@@ -5,7 +5,7 @@ from model import Dish, HistoryEntry, Product, User
 
 class Dao:
     def __init__(self):
-        self.connection = sqlite3.connect('test.db', check_same_thread=False)  # only for test purposes
+        self.connection = sqlite3.connect('recipe_app.db', check_same_thread=False)  # only for test purposes
         self.cursor = self.connection.cursor()
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS Users (
                             id text PRIMARY KEY,
