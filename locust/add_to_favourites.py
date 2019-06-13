@@ -59,7 +59,7 @@ class WebsiteTasks(TaskSet):
 
     @task(100)
     def delete_product(self):
-        self.client.get('/recipes/' + result_ids[next(counter)])
+        self.client.post('/recipes/' + result_ids[next(counter)])
 
 
 class WebsiteUser(HttpLocust):
