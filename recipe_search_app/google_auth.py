@@ -12,8 +12,8 @@ AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=of
 
 AUTHORIZATION_SCOPE = 'openid email profile'
 
-AUTH_REDIRECT_URI = 'http://127.0.0.1:5000/google/auth'
-BASE_URI = 'http://127.0.0.1:5000'
+AUTH_REDIRECT_URI = 'https://recipe-search-web-app.herokuapp.com/google/auth'
+BASE_URI = 'https://recipe-search-web-app.herokuapp.com'
 with open(os.path.join(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))),
                        'auth_google.txt')) as auth_file:
     CLIENT_ID = auth_file.readline().strip()
